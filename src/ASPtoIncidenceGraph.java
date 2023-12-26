@@ -1,12 +1,10 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 public class ASPtoIncidenceGraph {
     public static void main(String[] args) {
-        String inputFilePath = "C:\\Users\\erikh\\Desktop\\Bachelorarbeit\\Test\\test2.txt";
-        String outputFilePath = "C:\\Users\\erikh\\Desktop\\Bachelorarbeit\\Test\\output.gr";
+        String inputFilePath = "G:\\My Drive\\Uni\\Bachelorarbeit\\Test\\test2.txt";
+        String outputFilePath = "G:\\My Drive\\Uni\\Bachelorarbeit\\Test\\output.gr";
 
         Map<Integer, Set<String>> atomsByRule = new HashMap<>();
 
@@ -21,7 +19,7 @@ public class ASPtoIncidenceGraph {
                     String head = rule[0].trim();
                     String body = rule[1].trim().replace(".", "");
 
-                    List<String> atomsInRule = Arrays.asList(body.split(","));
+                    List<String> atomsInRule = new ArrayList<>(Arrays.asList(body.split(",")));
                     atomsInRule.add(head);
 
                     for(String atom : atomsInRule){
@@ -38,10 +36,46 @@ public class ASPtoIncidenceGraph {
         } catch (IOException e){
             e.printStackTrace();
         }
-        writeIncidenceGraphToFile(atomsByRule);
+        writeIncidenceGraphToFile(atomsByRule, outputFilePath);
     }
 
-    private static void writeIncidenceGraphToFile(Map<Integer, Set<String>> atomsByRule) {
+    private static void writeIncidenceGraphToFile(Map<Integer, Set<String>> atomsByRule, String outputFilePath) {
+        Set<String> vertexes = new HashSet<>();
+        Map<String, Integer> atomNumbers = new HashMap<>();
+        int currentAtomNumber = 1;
+        for(Map.Entry<Integer, Set<String>> entry: atomsByRule.entrySet()){
+            vertexes.add(entry.getKey().toString());
+            vertexes.addAll(entry.getValue());
+            atomNumbers.put(entry.getKey().toString(), currentAtomNumber++);
+            for (String atom: entry.getValue()){
+                atomNumbers.put(atom, currentAtomNumber++);
+            }
+        }
+        try(BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilePath))){
+            writer.write("p tw " + vertexes.size() + " " + calculateEdges(atomsByRule));
+            writer.newLine();
+
+            for (Map.Entry<Integer, Set<String>> entry : atomsByRule.entrySet()){
+                int vertexNumber = atomNumbers.get(entry.getKey().toString());
+
+                for (String atom : entry.getValue()) {
+                    int adjVertexNumber = atomNumbers.get(atom);
+                    writer.write(vertexNumber + " " + adjVertexNumber);
+                    writer.newLine();
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static int calculateEdges(Map<Integer, Set<String>> atomsByRule) {
+        int totalEdges = 0;
+        for (Set<String> atoms: atomsByRule.values()){
+            totalEdges += atoms.size();
+        }
+        return totalEdges;
     }
 
 }

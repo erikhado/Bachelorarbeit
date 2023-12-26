@@ -74,7 +74,7 @@ public class ASPtoPrimalGraph {
             }
 
 
-            writer.write("p td " + primalGraph.size() + " " + calculateEdges(primalGraph));
+            writer.write("p tw " + primalGraph.size() + " " + calculateEdges(primalGraph));
             writer.newLine();
 
             for (Map.Entry<String, Set<String>> entry : primalGraph.entrySet()) {

@@ -48,7 +48,9 @@ public class ASPtoIncidenceGraph {
             vertexes.addAll(entry.getValue());
             atomNumbers.put(entry.getKey().toString(), currentAtomNumber++);
             for (String atom: entry.getValue()){
-                atomNumbers.put(atom, currentAtomNumber++);
+                if(!atomNumbers.containsKey(atom)) {
+                    atomNumbers.put(atom, currentAtomNumber++);
+                }
             }
         }
         try(BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilePath))){

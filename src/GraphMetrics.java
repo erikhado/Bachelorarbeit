@@ -20,7 +20,7 @@ public class GraphMetrics {
             while ((line = br.readLine()) != null) {
                 if (line.startsWith("p")) {
                     String[] parts = line.split(" ");
-                    int numVertices = Integer.parseInt(parts[3]);
+                    int numVertices = Integer.parseInt(parts[2]);
                     for (int i = 1; i <= numVertices; i++) {
                         adjacencyList.put(Integer.toString(i), new HashSet<>());
                     }

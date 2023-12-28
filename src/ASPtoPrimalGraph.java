@@ -3,10 +3,10 @@ import java.util.*;
 
 public class ASPtoPrimalGraph {
     public static void main(String[] args) {
-        String inputFilePath = "C:\\Users\\erikh\\Desktop\\Bachelorarbeit\\Test\\test2.txt";
-        String outputFilePath = "C:\\Users\\erikh\\Desktop\\Bachelorarbeit\\Test\\output.gr";
+        String inputFilePath = "G:\\My Drive\\Uni\\Bachelorarbeit\\Test\\test2.txt";
+        String outputFilePath = "G:\\My Drive\\Uni\\Bachelorarbeit\\Test\\output.gr";
 
-        Map<Integer, Set<String>> ruleAtoms = new HashMap<>();
+        Map<Integer, Set<String>> atomsByRule = new HashMap<>();
         int i = 0;
         try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
             String line;
@@ -18,9 +18,9 @@ public class ASPtoPrimalGraph {
                     String head = rule[0].trim();
                     String body = rule[1].trim().replace(".", "");
 
-                    List<String> atomsInRule = Arrays.asList(body.split(","));
+                    String[] atomsInBody = body.split(",");
 
-                    for (String atom : atomsInRule) {
+                    for (String atom : atomsInBody) {
                         atom = atom.trim().replaceAll("\\.", ""); // Remove period
                         if (atom.startsWith("not ")) {
                             atom = atom.substring(4).trim();
@@ -28,39 +28,35 @@ public class ASPtoPrimalGraph {
                         atoms.add(atom);
                     }
                     atoms.addAll(Arrays.asList(head.split(",")));
-                    ruleAtoms.put(i, atoms);
+                    atomsByRule.put(i, atoms);
                     i++;
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Map<String, Set<String>> primalGraph = createPrimalGraph(ruleAtoms);
+        Map<String, Set<String>> primalGraph = createPrimalGraph(atomsByRule);
         writePrimalGraphToFile(primalGraph, outputFilePath);
     }
 
 
-
-    //
-
-    public static Map<String, Set<String>> createPrimalGraph(Map<Integer, Set<String>> ruleAtoms) {
+    public static Map<String, Set<String>> createPrimalGraph(Map<Integer, Set<String>> atomsByRule) {
         Map<String, Set<String>> primalGraph = new HashMap<>();
 
-        for(int i : ruleAtoms.keySet()){
-            for (String atom: ruleAtoms.get(i)){
-                primalGraph.put(atom, new HashSet<>());
+        for(int i : atomsByRule.keySet()){
+            for (String atom: atomsByRule.get(i)){
+                if(!primalGraph.containsKey(atom)) {
+                    primalGraph.put(atom, new HashSet<>());
+                }
             }
-            for (String atomA: ruleAtoms.get(i)){
-                for (String atomB: ruleAtoms.get(i)){
+            for (String atomA: atomsByRule.get(i)){
+                for (String atomB: atomsByRule.get(i)){
                     if(!atomA.equals(atomB) && !primalGraph.get(atomB).contains(atomA) && primalGraph.containsKey(atomA) && primalGraph.containsKey(atomB)){
                         primalGraph.get(atomA).add(atomB);
                     }
                 }
             }
         }
-
-
-
 
         return primalGraph;
     }

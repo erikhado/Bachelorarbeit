@@ -3,8 +3,8 @@ import java.util.*;
 
 public class ASPtoDualGraph {
     public static void main(String[] args) {
-        String inputFilePath = "G:\\My Drive\\Uni\\Bachelorarbeit\\Test\\test1.txt";
-        String outputFilePath = "G:\\My Drive\\Uni\\Bachelorarbeit\\Test\\output.gr";
+        String inputFilePath = "-";
+        String outputFilePath = "-";
 
         Map<String, Set<Integer>> rulesByAtoms = new HashMap<>();
 

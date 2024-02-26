@@ -3,8 +3,8 @@ import java.util.*;
 
 public class ASPtoPrimalGraph {
     public static void main(String[] args) {
-        String inputFilePath = "G:\\My Drive\\Uni\\Bachelorarbeit\\Test\\test2.txt";
-        String outputFilePath = "G:\\My Drive\\Uni\\Bachelorarbeit\\Test\\output.gr";
+        String inputFilePath = "-";
+        String outputFilePath = "-";
 
         Map<Integer, Set<String>> atomsByRule = new HashMap<>();
         int i = 0;
